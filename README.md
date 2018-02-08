@@ -8,7 +8,7 @@ To help add some whimsy to your dot-based data visualizations. [Read more about 
 
 ## Usage
 
-Coördinator is intended as a browser interface. You can use [the hosted version here](https://github.spotify.io/coordinator), or run it locally.
+Coördinator is intended as a browser interface. You can use [the hosted version here](https://spotify.github.io/coordinator), or run it locally.
 
 To run locally:
 `npm install` then `npm run dev`
