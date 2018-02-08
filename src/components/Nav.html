@@ -1,0 +1,65 @@
+<div class='nav-panel'>
+  <div class='side-bar-text'>
+    <h1> coördinator </h1>
+    <p>Turn an SVG into XY coördinates.
+    <br /> Made by <a href='https://twitter.com/alizauf'>Aliza Aufrichtig</a> @ <a href='https://www.spotify.com'>Spotify</a></p>
+  </div>
+  <ol>
+    <li class='{{step === 1 ? "selected-step": "non-selected-step"}}' on:click='set({step: 1})'>
+      Import SVG
+    </li>
+    <li class='{{step === 2 ? "selected-step": "non-selected-step"}}' on:click='set({step: 2})'>
+      Refine Dots
+    </li>
+    <li class='{{step === 3 ? "selected-step": "non-selected-step"}}' on:click='set({step: 3})'>
+      Get Coördinates
+    </li>
+
+  </ol>
+
+  <ol class='credits-placer'>
+    <li class='credits {{step === 4 ? "selected-step": "non-selected-step"}}' on:click='set({step: 4})'>
+      why this exists, thanks & credits
+    </li>
+  </ol>
+</div>
+
+<style>
+  .nav-panel {
+    width: 300px;
+    background-color: #F037A5;
+    overflow: scroll;
+    height: 100%;
+  }
+
+  .side-bar-text {
+    padding: 20px;
+  }
+
+  .selected-step {
+    background-color: #FAE62D;
+  }
+
+  .non-selected-step {
+    background-color: #F037A5;
+  }
+
+  .non-selected-step:hover {
+    color: white;
+  }
+
+  .credits-placer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    margin: 0;
+  }
+
+  .credits {
+    list-style: none;
+    font-weight: normal;
+    font-size: 14px;
+    padding-left: 30px;
+  }
+</style>

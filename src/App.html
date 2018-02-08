@@ -1,0 +1,298 @@
+<!-- Copyright (c) 2017-2018 Spotify AB
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<!-- It you're pawondering about this syntax, this file is written using Svelte. You can learn more here: https://svelte.technology/ -->
+<:Window bind:innerWidth='innerWidth'/>
+<div class='all' style='display: {{innerWidth > 650 ? "flex" : "none"}}'>
+  <div class='control-panels'>
+
+    <Nav bind:step />
+
+    <div class='active-step-panel'>
+
+      <!-- IMPORT -->
+    <SVGInput :examples :hiddenExamples :svgTextError :step bind:secretSVG ref:input on:readySVG='initialUpdate()' />
+
+      <!-- REFINE -->
+    <Refinement bind:numPoints bind:scale bind:translateX bind:translateY bind:radius bind:color bind:coordType :step />
+
+    <!-- EXPORT -->
+    <CoordsExport :step :coords :imageForDownload />
+
+    <!-- CREDITS -->
+    <Credits :hiddenExamples :step on:secretSVG='set({secretSVG: event.id})' />
+
+    </div>
+  </div>
+  <div ref:canvasHolder class='image-preview'>
+    <canvas ref:canvas width='1000' height='1000'></canvas>
+  </div>
+</div>
+{{#if innerWidth <= 650}}
+  <SmallWindowWarning />
+{{/if}}
+
+
+<style>
+
+h2 {
+  margin-bottom: 30px;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+a {
+  cursor: pointer;
+  color: #222326;
+  border-bottom: solid 1px #222326;
+}
+
+a:hover {
+  color: #fff;
+  border-bottom: solid 1px #fff;
+}
+
+ol {
+  list-style-position: inside;
+  width: 100%;
+  padding: 0;
+}
+
+ul {
+  padding: 0 30px;
+}
+
+li {
+  cursor: pointer;
+  padding: 20px 30px;
+  width: 100%;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.all {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.control-panels {
+  display: flex;
+  width: 650px;
+  background-color: #FAE62D;
+  height: 100%;
+}
+
+.active-step-panel {
+  padding: 30px;
+  width: 350px;
+  position: relative;
+  overflow: scroll;
+}
+
+.image-preview {
+  height: 100vh;
+  width: calc(100vw - 650px);
+  overflow: scroll;
+}
+</style>
+
+<script>
+
+import pathsToCoords from './js/pathsToCoords';
+import getTotalLengthAllPaths from './js/getTotalLengthAllPaths';
+import getCoordsMax from './js/getCoordsMax';
+import getFillCoords from './js/getFillCoords';
+
+import Nav from './components/Nav.html';
+import SVGInput from './components/SVGInput.html';
+import Refinement from './components/Refinement.html';
+import Credits from './components/Credits.html';
+import CoordsExport from './components/CoordsExport.html';
+import SmallWindowWarning from './components/SmallWindowWarning.html';
+
+
+import coordinator from './static/examples/coordinator.svg';
+import bunny from './static/examples/bunny.svg';
+import n64 from './static/examples/n64.svg';
+import sotomayor from './static/examples/sotomayor.svg';
+import bird from './static/examples/bird.svg';
+import pipe from './static/examples/pipe.svg';
+import spotify from './static/examples/spotify.svg';
+import cat from './static/examples/cat.svg';
+import banjo from './static/examples/banjo.svg';
+import accessible from './static/examples/accessible.svg';
+import aliza from './static/examples/aliza.svg';
+
+
+const examples = {
+  bunny,
+  n64,
+  sotomayor,
+  coordinator,
+  banjo,
+  bird,
+  accessible,
+  cat
+};
+
+const hiddenExamples = {
+  pipe,
+  spotify,
+  aliza
+};
+
+
+export default {
+  data () {
+    return {
+      step: 1,
+      examples,
+      hiddenExamples,
+      svgPreview: null,
+      numPoints: 1000,
+      scale: 1,
+      translateX: 20,
+      translateY: 20,
+      radius: 4,
+      color: '#F037A5',
+      coordType: 'outline',
+      imageForDownload: null,
+      errorMessage: false,
+      newSVG: true,
+      secretSVG: null,
+      coords: null,
+      innerWidth: null
+    };
+  },
+
+  computed: {
+    //Causes update when any of these change. See props observer
+    props: ( scale, numPoints, translateX, translateY, radius, coordType, color ) => ({ scale, numPoints, translateX, translateY, radius, coordType, color })
+  },
+
+  components: {
+    Nav,
+    SVGInput,
+    Refinement,
+    Credits,
+    CoordsExport,
+    SmallWindowWarning
+  },
+
+  oncreate() {
+    //observes changes to any controls
+    this.observe( 'props', props => {
+      //prevents double update on new svg, and is just listening then for controls
+      if (!this.get('newSVG')) {
+        this.update();
+      }
+    });
+  },
+
+  methods: {
+
+    initialUpdate() {
+
+      this.set({
+        scale: 1,
+        radius: 4,
+        translateX: 20,
+        translateY: 20,
+        numPoints: 1000,
+        coordType: 'outline',
+        newSVG: true,
+        svgTextError: false
+      });
+
+      this.update();
+      this.refs.canvasHolder.scrollLeft = 0;
+      this.refs.canvasHolder.scrollTop = 0;
+    },
+
+    //MAIN UPDATE METHOD CALLED WHENEVER A NEW SVG IS UPLOADED OR ANY CONTROLS ARE EDITED
+    update () {
+      let paths = this.refs.input.refs.svgHolder.getElementsByTagName('path');
+      //check for error / missing svg
+      if (paths.length === 0) {
+        this.set({svgTextError: true});
+      } else {
+        const scale = +this.get('scale');
+        const numPoints = this.get('numPoints');
+        const translateX = +this.get('translateX');
+        const translateY = +this.get('translateY');
+
+        let flatCoords = pathsToCoords( paths, scale, numPoints, translateX, translateY );
+        // If this is a newSVG that has just been uploaded, takes a guess at a scale and num points that will make it look good. If necessary, and resets flatCoords
+        const newSVG = this.get('newSVG');
+        if ( newSVG ) {
+          flatCoords = this.scaleNewSVG( flatCoords, paths, translateX, translateY );
+        }
+
+        const coordType = this.get('coordType');
+        if (coordType === 'inside') {
+          //only calculates fill coords if necessary
+          const fillCoords = getFillCoords(flatCoords, this.get('numPoints'));
+
+          this.drawDotsToCanvas( fillCoords );
+          this.set({coords: fillCoords});
+        } else {
+          this.drawDotsToCanvas( flatCoords );
+          this.set({coords: flatCoords});
+        }
+      }
+
+    },
+
+    drawDotsToCanvas(dotsToDraw) {
+      const canvas = this.refs.canvas;
+      const screenScale = window.devicePixelRatio || 1;
+      canvas.width = 1000 * screenScale;
+      canvas.height = 1000 * screenScale;
+      canvas.style.width = '1000px';
+      canvas.style.height = '1000px';
+
+      const ctx = canvas.getContext( '2d' );
+      const color = this.get('color');
+      const radius = this.get('radius');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      dotsToDraw.forEach( d => {
+
+        ctx.fillStyle = color === 'random' ? `rgb(${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)})` : color;
+        ctx.strokeStyle = 'transparent';
+        ctx.beginPath();
+        ctx.arc( d[0] * screenScale, d[1] * screenScale, radius, 0,  2 * Math.PI, true );
+        ctx.fill();
+        ctx.closePath();
+      });
+      const imageForDownload = canvas.toDataURL();
+      this.set({imageForDownload});
+    },
+
+    scaleNewSVG ( flatCoords, paths, translateX, translateY) {
+      const xMax = getCoordsMax( flatCoords, 0);
+      const guessAtNewScale = Math.ceil(600 / xMax);
+      const scaledLengthAllPaths = getTotalLengthAllPaths(paths) * guessAtNewScale;
+      const guessAtNumPoints = Math.round(scaledLengthAllPaths / 10);
+      const newFlatCoords = pathsToCoords( paths, guessAtNewScale, guessAtNumPoints, translateX, translateY );
+      this.set({scale: guessAtNewScale, numPoints: guessAtNumPoints});
+      this.set({newSVG: false});
+      return newFlatCoords;
+    }
+  }
+};
+</script>

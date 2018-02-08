@@ -1,0 +1,54 @@
+<div class='small-window-warning'>
+  <div class='text'>
+  <h1> coördinator </h1>
+  <p>Turn an SVG into XY coördinates.
+  <br /> Made by <a href='https://twitter.com/alizauf'>Aliza Aufrichtig</a> @ <a href='https://www.spotify.com'>Spotify</a></p>
+  </div>
+  <p>Hey! Coördinator is designed for you to upload an SVG, manipulate it, and then download XY coördinates for your creative coding uses. Which is to say, it is not super useful on tiny screens.</p>
+  <p>So here's a gif of what it does.</p>
+  <img alt='demonstration of app on desktop' src='../src/static/images/demonstration.gif' />
+  <p>Think it's cool? <a href="mailto:?subject=Note%20to%20Self%3A%20Check%20out%20Co%C3%B6rdinator%2C%20that%20tool%20I%20saw%20on%20the%20internet&body=https%3A%2F%2Fspotify.github.io%2Fcoordinator" target="_top">Email yourself a link</a> to check it out on the big screen, or just copy the link and do with it what you will.</p>
+
+  <input type="text" value="{{url}}">
+</div>
+
+<style>
+
+img {
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #222326;
+}
+.small-window-warning {
+  width: 100vw;
+  height: 100vh;
+  background-color: #F037A5;
+  overflow: scroll;
+  padding: 20px;
+}
+
+.text {
+  margin: 0 auto;
+  text-align: center;
+}
+
+a {
+  cursor: pointer;
+  color: #FAE62D;
+  border-bottom: solid 1px #FAE62D;
+}
+
+input {
+  width: 100%;
+  background-color:  #FAE62D;
+}
+</style>
+<script>
+export default {
+  data () {
+    return {
+      url: window.location.href
+    };
+  }
+};
+</script>

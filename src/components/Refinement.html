@@ -1,0 +1,84 @@
+<div class='step-2' style='display: {{step === 2 ? "block" : "none"}}'>
+  <h2>Refine Dots</h2>
+
+<p class='slider-text'><strong>Number of points:</strong>
+  <input class='adjust' type='text' bind:value='numPoints' />
+</p>
+<input type='range' min='1' max='5000' bind:value='numPoints' />
+
+<p class='slider-text'><strong>Scale:</strong>
+  <input class='adjust' type='text' bind:value='scale' />
+</p>
+<input type='range' min='1' max='100' bind:value='scale' />
+
+<p class='slider-text'><strong>Translate X:</strong>
+  <input class='adjust' type='text' bind:value='translateX' />
+</p>
+<input type='range' min='1' max='1000' bind:value='translateX' />
+
+<p class='slider-text'><strong>Translate Y:</strong>
+  <input class='adjust' type='text' bind:value='translateY' />
+</p>
+<input type='range' min='1' max='1000' bind:value='translateY' />
+
+<p class='slider-text'><strong>Dot radius:</strong>
+  <input class='adjust' type='text' bind:value='radius' />
+</p>
+<input type='range' min='1' max='100' bind:value='radius' />
+
+
+<p><strong>Color:</strong>
+  <input class='color-picker' type="color" bind:value='color' /><a on:click='set({color: "random"})'><span style='color: {{confetti()}}'>C</span><span style='color: {{confetti()}}'>o</span><span style='color: {{confetti()}}'>n</span><span style='color: {{confetti()}}'>f</span><span style='color: {{confetti()}}'>e</span><span style='color: {{confetti()}}'>t</span><span style='color: {{confetti()}}'>t</span><span style='color: {{confetti()}}'>i</span><span style='color: {{confetti()}}'>!</span></a></p>
+<div class="btn-group btn-group-sm" role="group" aria-label="...">
+  <button on:click='set({coordType: "outline"})' type="button" class="btn btn-stroked-dark data-format-but {{coordType === 'outline' ? 'dark-selected' : 'non-selected'}}">Outline</button>
+  <!-- <button type="button" class="btn btn-stroked-dark">Middle</button> -->
+  <button on:click='set({coordType: "inside"})' type="button" class="btn btn-stroked-dark data-format-but {{coordType === 'inside' ? 'dark-selected' : 'non-selected'}}">Fill</button>
+</div>
+
+<p class='small'>Note: Fill mode works best with very simple SVGs.</p>
+</div>
+
+<style>
+  .slider-text {
+    margin-bottom: 2px;
+    margin-top: 20px;
+  }
+
+  .adjust {
+    width: 50px;
+  }
+
+  .color-picker {
+    width: 50px;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .dark-selected {
+    background-color: #616467;
+    color: white;
+    border-color: #616467;
+  }
+
+  .dark-selected:hover {
+    color: white;
+  }
+
+  .non-selected {
+    color: #616467;
+  }
+
+  .non-selected:hover {
+    color: white;
+  }
+</style>
+
+<script>
+export default {
+  helpers: {
+    confetti() {
+      return `rgb(${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)}, ${Math.round(Math.random()*255)})`;
+    }
+  }
+};
+</script>

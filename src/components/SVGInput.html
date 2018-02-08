@@ -1,0 +1,271 @@
+<div class='step-1' style='display: {{step === 1 ? "block" : "none"}}'>
+  <h2>Import SVG</h2>
+  <label for="file-upload" class="custom-file-upload">
+    Select File
+  </label>
+  <input id="file-upload" type="file" on:change="handleFiles(this.files)" />
+  <p class='smaller-paste'>or paste SVG text file below</p>
+  <div style='stroke: {{errorMessage ? "#EB1E32" : "#F037A5" }}' ref:svgHolder id='svg-holder'>
+    {{{svgPreview}}}
+  </div>
+
+  {{#if errorMessage}}
+  <p class='nestpas'>Error: Ceci n'est pas une SVG</p>
+  {{/if}}
+  <div class='cm-input' ref:cmInput>
+    {{#if svgTextError }}
+    <div class='svg-text-error'>
+      <p>Yikes! There is a problem with your SVG text file. Try again.</p>
+    </div>
+    {{/if}}
+  </div>
+  <h3>...or try an example</h3>
+
+  <div class='example-container'>
+    {{#each Object.keys(examples) as example }}
+    <button on:click='setNewSVG(examples[example], true, example)' class='dot-button {{selectedExample === example ? "selected-dot-button" : ""}}'>{{{examples[example]}}}</button>
+     {{/each}}
+  </div>
+  <p>Find more SVGs at the <a target='_blank' href="https://thenounproject.com">Noun Project
+  <img class='icon' alt='link out' src='../src/static/images/link-out.svg' /></a></p>
+</div>
+
+<style>
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 2px solid #F037A5;
+  color: #F037A5;
+  border-radius: 500px;
+  display: inline-block;
+  padding: 10px 29px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+  height: 35px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.custom-file-upload:hover {
+  background-color: #F037A5;
+  color: #FAE62D;
+}
+
+.smaller-paste {
+  font-size: 12px;
+  margin-top: 0px;
+  padding-left: 5px;
+}
+
+#svg-holder {
+  fill: none;
+  stroke: black;
+  stroke-width: 2px;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 60px;
+  right: 30px;
+}
+
+#svg-holder > svg {
+  width: 100px;
+  height: 100px;
+}
+
+.nestpas {
+  font-family: 'Pacifico', cursive;
+  font-size: 14px;
+  position: absolute;
+  top: 130px;
+  right: 16px;
+  width: 109px;
+  color: #EB1E32;
+  line-height: 1;
+}
+
+.CodeMirror {
+  height: 300px;
+}
+
+.cm-input {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.svg-text-error {
+  width: calc(100% - 30px);
+  left: 30px;
+  padding-left: 20px;
+  height: 60px;
+  background-color: #F037A5;
+  position: absolute;
+  bottom: 0;
+  z-index: 10;
+  border: 2px solid #FAE62D;
+  font-size: 14px;
+  color: white;
+}
+
+.example-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.dot-button > svg {
+  fill: none;
+  stroke: #F037A5;
+  stroke-width: 2px;
+  width: 32px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.dot-button {
+  background-color: transparent;
+  width: 66px;
+  height: 66px;
+  border-radius: 66px;
+  border: #F037A5 2px solid;
+  font-size: 14px;
+  color: #F037A5;
+  margin-bottom: 20px;
+}
+
+.dot-button:hover {
+  background-color: #F037A5;
+  color: #FAE62D;
+}
+
+.selected-dot-button {
+  background-color: #F037A5;
+  color: #FAE62D;
+}
+
+.selected-dot-button > svg {
+  fill: none;
+  stroke: #FAE62D;
+  stroke-width: 2px;
+  width: 32px;
+  margin: 0;
+}
+
+.dot-button:hover > svg {
+  fill: none;
+  stroke: #FAE62D;
+  stroke-width: 2px;
+  width: 32px;
+  margin: 0;
+}
+
+.icon {
+  width: 16px;
+  display: inline-block;
+}
+
+</style>
+<script>
+import pathologize from '../js/pathologize';
+
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/xml/xml';
+import beautify from 'xml-beautifier';
+
+
+export default {
+  data () {
+    return {
+      cmInput: null,
+      selectedExample: 'bunny'
+    };
+  },
+
+  oncreate () {
+
+    const cmInput = CodeMirror(this.refs.cmInput, {
+      value: '//raw SVG will go here',
+      mode:  'xml',
+      lineNumbers: true,
+      lineWrapping: true,
+      htmlMode: true
+    });
+
+    this.set({cmInput});
+
+    //sets the initial example
+    const selectedExample = this.get('selectedExample');
+    const examples = this.get('examples');
+
+    //listens for new SVG input from direct pasting or editing into the code mirror
+    cmInput.on('change', (cm, change) => {
+      if ( change.origin != 'setValue' ) {
+        const changedValue = cm.getValue();
+        this.setNewSVG( changedValue, false, null );
+      }
+    });
+
+    this.setNewSVG( examples[selectedExample], true, selectedExample );
+
+    this.observe( 'secretSVG', secretSVG => {
+      if (secretSVG) {
+        const hiddenExamples = this.get('hiddenExamples');
+        this.setNewSVG( hiddenExamples[secretSVG], true, null );
+        this.set({secretSVG: null});
+      }
+    });
+
+  },
+
+  methods: {
+    handleFiles( e ) {
+      const file = e[0];
+      const hiddenExamples = this.get('hiddenExamples');
+      const context = this;
+
+      if (file.type === 'image/svg+xml') {
+        const reader = new FileReader();
+        reader.onload = function() {
+          context.setNewSVG(reader.result, true, null);
+        };
+        reader.readAsText(file);
+      } else {
+        this.setNewSVG(hiddenExamples.pipe, true, null );
+        this.set({errorMessage: true});
+      }
+    },
+
+    setNewSVG( rawSVG, updateCodeMirror, example ) {
+      const pathsOnly = pathologize(rawSVG);
+
+      //first update preview image and svg reference in DOM
+      //and handle error message information and example selection if necessary
+      this.set({
+        svgPreview: pathsOnly,
+        selectedExample: example,
+        errorMessage: false
+
+      });
+
+      //updates code mirror if svg isn't coming from a paste
+      if ( updateCodeMirror ) {
+        const cmInput = this.get('cmInput');
+        cmInput.setValue(beautify(rawSVG));
+      }
+
+      //then fires an event telling the app it's time to coordinate
+      this.fire( 'readySVG', {
+        ready: true
+      });
+
+    },
+
+
+  }
+};
+</script>

@@ -1,0 +1,55 @@
+<div class='step-4' style='display: {{step === 4 ? "block" : "none"}}'>
+  <h3>Why does this exist?</h3>
+  <img class='dita' alt='dita von teese dissolving into dots' src='../src/static/images/dita.gif' />
+  <p>I (<a on:click='setSecretSVG("aliza")'>Aliza</a>) needed a way to compose Dita Von Teese's face out of 7,532 dots for <a href='https://www.informationisbeautifulawards.com/showcase/2556-you-are-what-you-stream' target="_blank">this (nearly) award-winning project</a> for Spotify. Here are some <a href='https://bl.ocks.org/alizauf' target="_blank">other ideas about how you could use coördinator</a>.</p>
+  <h3>Contribute</h3>
+  <p>This project is free and open source under an Apache 2.0 license. <a href='https://github.com/spotify/coordinator' target='_blank'>I'd love for you to contribute</a>.</p>
+  <h3>Thanks!</h3>
+  <p> Many thanks to my colleagues on the Data:Design team for letting me <a on:click='setSecretSVG("spotify")'>put the spot in Spotify</a>,
+     <a href='https://twitter.com/rich_harris' target="_blank">Rich Harris</a> for <a href='https://pathologist.surge.sh' target="_blank">Pathologist</a> (and <a href='https://svelte.technology/' target='_blank'>Svelte</a> and <a href='https://rollupjs.org/' target='_blank'>Rollup</a>), the fine folks of <a href='http://csv.nyc/' target="_blank">csv soundsystem</a> for their open source support, and <a href='https://twitter.com/veltman' target="_blank">Noah Veltman</a> for a <a href='https://twitter.com/veltman/status/867069236467818497?cn=cmVwbHk%3D' target="_blank">clutch tweet</a> in the nick of time!</p>
+
+  <h3>Image Credits</h3>
+  <ul class='image-credits'>
+    <li>Bunny: Erik Dana (Noun Project)</li>
+    <li>N64: Ozza Okuonghae (Noun Project)</li>
+    <li>Sonia Sotomayor: Lorie Shaull (Noun Project)</li>
+    <li>Banjo dude: Luis Prado (Noun Project)</li>
+    <li>Pigeon: Kari Gaynor (Noun Project)</li>
+    <li>Accessible Icon: The Accessible Icon Project</li>
+    <li>Cat: Maxim Kulikov (Noun Project)</li>
+    <li>Spotify Icon: Copyright Spotify</li>
+    <li>Download & link out symbol: Loudoun Design Co. (Noun Project)</li>
+  </ul>
+</div>
+
+<style>
+
+.dita {
+  width: 100%;
+}
+
+.step-4 p {
+  font-size: 14px;
+}
+
+.image-credits > li {
+  font-size: 14px;
+  font-weight: normal;
+  padding: 0;
+  cursor: default;
+}
+
+</style>
+
+<script>
+export default {
+  methods: {
+    setSecretSVG( id ) {
+      this.fire( 'secretSVG', {
+        id
+      });
+    },
+  }
+};
+
+</script>

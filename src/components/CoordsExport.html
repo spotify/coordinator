@@ -1,0 +1,143 @@
+<div class='step-3' style='display: {{step === 3 ? "block" : "none"}}'>
+  <h2>Get Coördinates</h2>
+  <div class='output-actions'>
+    <div class="btn-group btn-group-sm" role="group" aria-label="...">
+      <button on:click='set({dataFormat: "json"})' type="button" class="btn btn-stroked-dark data-format-but {{dataFormat === 'json' ? 'dark-selected' : 'non-selected'}}">json</button>
+      <button on:click='set({dataFormat: "csv"})' type="button" class="btn btn-stroked-dark data-format-but {{dataFormat === 'csv' ? 'dark-selected' : 'non-selected'}}">csv</button>
+    </div>
+    <p class='json-csv-dl'>
+      <img class='download' alt='download icon' src='../src/static/images/download-black.svg' />:
+
+      <a href='{{encodeURI("data:text/json;charset=utf-8," + jsonCoords)}}' download='coordinator.json'> json</a>
+
+      <a href='{{encodeURI("data:text/csv;charset=utf-8," + csvOutput)}}' download='coordinator.csv'>csv</a>
+    </p>
+  </div>
+
+  <div class='cm-output' ref:cmOutput>
+  </div>
+  <p>Carving a pumpkin or something?
+    <br /><img class='download' alt='download icon' src='../src/static/images/download-black.svg' />: <a href='{{imageForDownload}}' download='coordinator.png'> png</a></p>
+</div>
+
+<style>
+  .output-actions {
+    display: flex;
+  }
+
+  .data-format-but {
+    padding: 11px 26px 9px;
+  }
+
+  .json-csv-dl {
+    margin-left: 20px;
+    margin-top: 3px;
+  }
+
+  .CodeMirror {
+    height: 300px;
+  }
+
+  .cm-output {
+    margin-bottom: 30px;
+  }
+
+  .download {
+    width: 20px;
+    display: inline-block;
+  }
+
+  .dark-selected {
+    background-color: #616467;
+    color: white;
+    border-color: #616467;
+  }
+
+  .dark-selected:hover {
+    color: white;
+  }
+
+  .non-selected {
+    color: #616467;
+  }
+
+  .non-selected:hover {
+    color: white;
+  }
+
+
+</style>
+
+<script>
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/javascript/javascript';
+
+export default {
+  data () {
+    return {
+      dataFormat: 'json',
+      cmOutput: null,
+      csvOutput: null,
+      jsonCoords: null
+    };
+  },
+
+  oncreate() {
+    const cmOutput = CodeMirror(this.refs.cmOutput, {
+      value: '//coordinates will go here',
+      mode:  'javascript',
+      lineNumbers: true,
+      lineWrapping: true,
+      htmlMode: true
+    });
+
+    this.set({cmOutput});
+
+    this.observe( 'step', step => {
+      if (step === 3) {
+        //hack to fix when code mirror gets unhappy when it's instantiated behind a display:none
+        setTimeout(function() {
+          cmOutput.refresh();
+        }, 50);
+      }
+    });
+
+    this.observe( 'coords', coords => {
+      const dataFormat = this.get('dataFormat');
+      if ( coords && dataFormat ) {
+        this.updateExport( coords, dataFormat, cmOutput );
+      }
+    });
+
+    this.observe( 'dataFormat', dataFormat => {
+      const coords = this.get( 'coords' );
+      if ( coords && dataFormat ) {
+        this.updateExport( coords, dataFormat, cmOutput );
+      }
+    });
+  },
+
+  methods: {
+    coordsToCsv ( coords ) {
+      let csvOutput = 'x,y\n';
+      coords.forEach( x => {
+        csvOutput += `${x[0]},${x[1]}\n`;
+      });
+      this.set({csvOutput});
+      return csvOutput;
+    },
+
+    coordsToJson ( coords ) {
+      const jsonCoords = JSON.stringify(coords);
+      this.set({jsonCoords});
+      return jsonCoords;
+    },
+
+    updateExport ( coords, dataFormat, cmOutput ) {
+      const csvOutput = this.coordsToCsv( coords );
+      const jsonOutput = this.coordsToJson( coords );
+      cmOutput.setValue( dataFormat === 'csv' ? csvOutput : jsonOutput );
+    }
+  }
+};
+</script>
