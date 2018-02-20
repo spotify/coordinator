@@ -12824,11 +12824,7 @@ function create_main_fragment$2(state, component) {
 
 			text_15 = createText("\n  ");
 			p_1 = createElement("p");
-<<<<<<< HEAD
 			p_1.innerHTML = "Find more SVGs at the <a target=\"_blank\" href=\"https://thenounproject.com\">Noun Project\n  <img class=\"icon\" alt=\"link out\" src=\"../coordinator/src/static/images/link-out.svg\"></a>";
-=======
-			p_1.innerHTML = "Find more SVGs at the <a target=\"_blank\" href=\"https://thenounproject.com\">Noun Project\n  <img class=\"icon\" alt=\"link out\" src=\"../src/static/images/link-out.svg\"></a>";
->>>>>>> 065e8ca39de3b508f12d6d81fd333bb0be6d9db1
 			this.h();
 		},
 
@@ -13700,11 +13696,7 @@ function create_main_fragment$4(state, component) {
 			encapsulateStyles$4(div);
 			img.className = "dita";
 			img.alt = "dita von teese dissolving into dots";
-<<<<<<< HEAD
 			img.src = "../coordinator/src/static/images/dita.gif";
-=======
-			img.src = "../src/static/images/dita.gif";
->>>>>>> 065e8ca39de3b508f12d6d81fd333bb0be6d9db1
 			addListener(a, "click", click_handler);
 			a_1.href = "https://www.informationisbeautifulawards.com/showcase/2556-you-are-what-you-stream";
 			a_1.target = "_blank";
@@ -14807,11 +14799,7 @@ function create_main_fragment$5(state, component) {
 			setAttribute(div_2, "aria-label", "...");
 			img.className = "download";
 			img.alt = "download icon";
-<<<<<<< HEAD
 			img.src = "../coordinator/src/static/images/download-black.svg";
-=======
-			img.src = "../src/static/images/download-black.svg";
->>>>>>> 065e8ca39de3b508f12d6d81fd333bb0be6d9db1
 			a.href = a_href_value = state.encodeURI("data:text/json;charset=utf-8," + state.jsonCoords);
 			a.download = "coordinator.json";
 			a_1.href = a_1_href_value = state.encodeURI("data:text/csv;charset=utf-8," + state.csvOutput);
@@ -14821,11 +14809,7 @@ function create_main_fragment$5(state, component) {
 			div_3.className = "cm-output";
 			img_1.className = "download";
 			img_1.alt = "download icon";
-<<<<<<< HEAD
 			img_1.src = "../coordinator/src/static/images/download-black.svg";
-=======
-			img_1.src = "../src/static/images/download-black.svg";
->>>>>>> 065e8ca39de3b508f12d6d81fd333bb0be6d9db1
 			a_2.href = state.imageForDownload;
 			a_2.download = "coordinator.png";
 			div.className = "step-3";
@@ -14971,11 +14955,7 @@ function create_main_fragment$6(state, component) {
 			encapsulateStyles$6(div);
 			div_1.className = "text";
 			img.alt = "demonstration of app on desktop";
-<<<<<<< HEAD
 			img.src = "../coordinator/src/static/images/demonstration.gif";
-=======
-			img.src = "../src/static/images/demonstration.gif";
->>>>>>> 065e8ca39de3b508f12d6d81fd333bb0be6d9db1
 			input.type = "text";
 			input.value = state.url;
 			div.className = "small-window-warning";
