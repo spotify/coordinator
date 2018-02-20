@@ -6,7 +6,7 @@
       <button on:click='set({dataFormat: "csv"})' type="button" class="btn btn-stroked-dark data-format-but {{dataFormat === 'csv' ? 'dark-selected' : 'non-selected'}}">csv</button>
     </div>
     <p class='json-csv-dl'>
-      <img class='download' alt='download icon' src='../src/static/images/download-black.svg' />:
+      <img class='download' alt='download icon' src='../coordinator/src/static/images/download-black.svg' />:
 
       <a href='{{encodeURI("data:text/json;charset=utf-8," + jsonCoords)}}' download='coordinator.json'> json</a>
 
@@ -17,7 +17,7 @@
   <div class='cm-output' ref:cmOutput>
   </div>
   <p>Carving a pumpkin or something?
-    <br /><img class='download' alt='download icon' src='../src/static/images/download-black.svg' />: <a href='{{imageForDownload}}' download='coordinator.png'> png</a></p>
+    <br /><img class='download' alt='download icon' src='../coordinator/src/static/images/download-black.svg' />: <a href='{{imageForDownload}}' download='coordinator.png'> png</a></p>
 </div>
 
 <style>
