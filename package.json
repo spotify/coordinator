@@ -23,6 +23,7 @@
     "babel-core": "^6.26.0",
     "codemirror": "^5.32.0",
     "d3-array": "^1.2.1",
+    "opentype.js": "^0.8.0",
     "pathologist": "^0.1.9",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.6",
