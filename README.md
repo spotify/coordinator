@@ -4,7 +4,7 @@ A visual interface for turning an SVG into XY coördinates. Created by [Aliza Au
 
 ## Why does this exist?
 
-To help add some whimsy to your dot-based data visualizations. [Read more about the project here](https://labs.spotify.com/), and [view some examples of what you could build with it](https://bl.ocks.org/alizauf).
+To help add some whimsy to your dot-based data visualizations. [Read more about the project here](https://labs.spotify.com/2018/03/02/introducing-coordinator-a-new-open-source-project-made-at-spotify-to-inject-some-whimsy-into-data-visualizations/), and [view some examples of what you could build with it](https://bl.ocks.org/alizauf).
 
 ## Usage
 
