@@ -3,6 +3,12 @@ module.exports = {
         "browser": true,
         "es6": true
     },
+    "globals": {
+        "describe": true,
+        "it": true,
+        "require": true,
+        "expect": true,
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module"
