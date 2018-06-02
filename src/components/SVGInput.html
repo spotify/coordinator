@@ -4,15 +4,50 @@
     Select File
   </label>
   <input id="file-upload" type="file" on:change="handleFiles(this.files)" />
-  <p class='smaller-paste'>or paste SVG text file below</p>
   <div style='stroke: {{errorMessage ? "#EB1E32" : "#F037A5" }}' ref:svgHolder id='svg-holder'>
     {{{svgPreview}}}
   </div>
 
+<!-- New Code -->
+<h2>Convert Text</h2>
+
+<p><strong>Font URL:</strong>
+<input bind:value='font' placeholder="If not interested just press load" id='font' type=text>
+</p>
+<button id='loadb'>Load</button>
+<div id='loads'></div>
+
+<p><strong>Text Input:</strong>
+<input bind:value='text' placeholder="Type the text you wish" id='text' type=text>
+</p>
+
+<!-- Above you can see some extra options for the user 
+  if you wish to add them -->
+
+<!--<h4>Parameters</h4>
+X<input bind:value='x' id='x' type=text>
+Y<input bind:value='y' id='y' type=text>
+Font Size<input bind:value='fontsize' id='fontsize' type=text>
+Kerning<input bind:value='kerning' id='kerning' type=checkbox>
+Anchor<input bind:value='anchor' id='anchor' placeholder="top">-->
+
+<!--Debug<input bind:value='debug' id='debug' type=checkbox>-->
+<button id='getsvg' type='button'>GetSVGPath</button>
+<p><textarea id='result'></textarea></p>
+
+<script>
+       $('#getsvg').click(function(){
+           var temp = $("#result").val(); 
+           $("#result").text(temp);
+       });
+</script>
+
+<!-- New Code ends here -->
+  <h5>paste the SVG path below:</h5>
   {{#if errorMessage}}
   <p class='nestpas'>Error: Ceci n'est pas une SVG</p>
   {{/if}}
-  <div class='cm-input' ref:cmInput>
+  <div class='cm-input' id='cm-input' ref:cmInput>
     {{#if svgTextError }}
     <div class='svg-text-error'>
       <p>Yikes! There is a problem with your SVG text file. Try again.</p>
@@ -59,6 +94,16 @@ input[type="file"] {
   font-size: 12px;
   margin-top: 0px;
   padding-left: 5px;
+}
+
+
+#result {
+  margin-bottom: 2px;
+  position: relative;
+  width: 271.11px;
+  height: 120px;
+  font-family: monospace;
+  line-height: 1.5;
 }
 
 #svg-holder {
@@ -187,6 +232,7 @@ export default {
   },
 
   oncreate () {
+
 
     const cmInput = CodeMirror(this.refs.cmInput, {
       value: '//raw SVG will go here',
