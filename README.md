@@ -1,3 +1,7 @@
+# NOTICE
+
+This project is no longer supported and there may be unresolved security vulnerabilities.
+
 # Coördinator
 
 A visual interface for turning an SVG into XY coördinates. Created by [Aliza Aufrichtig](https://twitter.com/alizauf) @ Spotify.
